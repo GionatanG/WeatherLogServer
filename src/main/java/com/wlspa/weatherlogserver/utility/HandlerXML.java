@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.wlspa.weatherlogserver.utility;
 
 import java.util.ArrayList;
@@ -17,7 +12,9 @@ import org.w3c.dom.NodeList;
  * @author GionatanG
  * @author ChiaraC
  */
-public class HandlerXML {
+
+public class HandlerXML 
+{
     public void updateHourly(Document data, NodeList measurementList) 
     {
         /**
@@ -52,11 +49,9 @@ public class HandlerXML {
     public void fromXMLToData(ArrayList<String> attr, Document responseFromOWM)
     {
         //cities is a list of cities
-        
         NodeList cities = responseFromOWM.getElementsByTagName("item");
         for(int i = 0; i < cities.getLength(); i++)
         {
-            
             //tutti i figli di item
             Element city = (Element) cities.item(i);
             String updateTime = city.getElementsByTagName("lastupdate")
@@ -75,7 +70,6 @@ public class HandlerXML {
                     NamedNodeMap temp2=attributeNode.getAttributes();
                     for(int k=0; k<temp2.getLength(); k++)
                     {
-                        
                     }
                 }
             }
@@ -84,8 +78,5 @@ public class HandlerXML {
     
     public void fromDataToXML()
     {
-        
-        
-        
     }
 }
