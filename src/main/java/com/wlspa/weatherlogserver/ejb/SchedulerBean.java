@@ -27,7 +27,6 @@ public class SchedulerBean
     public void init()
     {
         dbHandler=new HandlerDB();
-        hourlySchedule();
     }
 
     
@@ -54,10 +53,10 @@ public class SchedulerBean
             OWMResponse response = new OWMResponse(data);
             int cityID = response.getCityID();
             System.out.println(cityID);
-            //if(!dbHandler.findCity(cityID))
-            //{
+            if(!dbHandler.findCity(cityID))
+            {
                 addCityToDB(response);
-            //}
+            }
             for(int j = 0; j < measurementNames.size(); j++)
             {
                 addMeasurementToDB(measurementNames.get(j),
