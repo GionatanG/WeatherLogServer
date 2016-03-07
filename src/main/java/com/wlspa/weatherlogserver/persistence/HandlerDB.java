@@ -8,6 +8,7 @@ package com.wlspa.weatherlogserver.persistence;
 import com.wlspa.weatherlogserver.entity.City;
 import com.wlspa.weatherlogserver.entity.Measurement;
 import java.util.Date;
+import java.util.List;
 import java.util.logging.Logger;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -37,8 +38,11 @@ public class HandlerDB {
         Query findQuery;
         findQuery = em.createQuery("SELECT c FROM City c "
                                 + "WHERE c.id = " + id);
-        if(findQuery.getResultList() != null)
-        {
+        
+        List<City> result=findQuery.getResultList() ;
+        System.out.println(result.toString());
+        if(!result.isEmpty())
+        {   
            return true;
         }
         return false;
