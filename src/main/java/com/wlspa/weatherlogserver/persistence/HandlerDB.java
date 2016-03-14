@@ -40,7 +40,6 @@ public class HandlerDB {
                                 + "WHERE c.id = " + id);
         
         List<City> result=findQuery.getResultList() ;
-        System.out.println(result.toString());
         if(!result.isEmpty())
         {   
            return true;

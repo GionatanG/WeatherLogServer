@@ -34,17 +34,11 @@ public class SchedulerBean
     public void hourlySchedule() 
     {
         ServerInfo info = new ServerInfo();
-        info.printDoc();
         
         ArrayList<String> cityList = info.getCities();
         ArrayList<String> measurementNames = info.getMeasurementsProperty("name");
         ArrayList<String> measurementUnits = info.getMeasurementsProperty("unit");
         
-        System.out.println("cities names:    "+ cityList.toString());
-        System.out.println("measurement names:    "+ measurementNames.toString());
-        System.out.println("measurement units:    "+ measurementUnits.toString());
-                
-        System.out.println("Abbiamo "+cityList.size()+" città" );
         OWMBean owmBean = new OWMBean();
         for(int i = 0; i < cityList.size(); i++)
         {
@@ -52,7 +46,6 @@ public class SchedulerBean
             Document data = owmBean.getData(cityName);
             OWMResponse response = new OWMResponse(data);
             int cityID = response.getCityID();
-            System.out.println(cityID);
             if(!dbHandler.findCity(cityID))
             {
                 addCityToDB(response);
@@ -67,19 +60,26 @@ public class SchedulerBean
     }
     
     
-    @Schedule(hour = "15", minute = "36", second= "0", persistent = false)
+    @Schedule(hour = "2", minute = "59", second= "59", persistent = false)
     public void dailySchedule() 
     {
-        /*System.out.println("Ora sono nella dailySchedule()");
-        Document config = getConfigFile();
-        NodeList cities = config.getElementsByTagName("city");
-        NodeList measurements = config.getElementsByTagName("daily");
-        ArrayList<String> cityList = xmlManager.getCityList(cities);
+        ServerInfo info = new ServerInfo();
+        
+        ArrayList<String> cityList = info.getCities();
+        OWMBean owmBean = new OWMBean();
         for(int i = 0; i < cityList.size(); i++)
         {
-            Document data = getData(cityList.get(i));
-            xmlManager.updateDaily(data,measurements);
-        }*/
+            String cityName = cityList.get(i);
+            Document data = owmBean.getData(cityName);
+            OWMResponse response = new OWMResponse(data);
+            int cityID = response.getCityID();
+            if(!dbHandler.findCity(cityID))
+            {
+                addCityToDB(response);
+            }
+            addSunToDB("rise",response);
+            addSunToDB("set",response);
+        }
     }
     
 
@@ -99,6 +99,25 @@ public class SchedulerBean
         int idCity = response.getCityID();
         Date updateTime = response.getUpdateTime();
         String value = response.getMeasurement(name);
+        
+        dbHandler.addMeasurement(idCity, updateTime, name, value, unit);
+    }
+
+    private void addSunToDB(String type, OWMResponse response) 
+    {
+        String name = "sun" + type;
+        int idCity = response.getCityID();
+        Date updateTime = response.getUpdateTime();
+        String value;
+        if(type.equals("rise"))
+        {
+            value = response.getSunrise();
+        }
+        else
+        {
+            value = response.getSunset();
+        }
+        String unit = "";
         
         dbHandler.addMeasurement(idCity, updateTime, name, value, unit);
     }
