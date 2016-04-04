@@ -33,11 +33,10 @@ public class HandlerDB {
         em = factory.createEntityManager();
     }
 
-    public boolean findCity(int id)
+    public boolean findCityById(int id)
     {
-        Query findQuery;
-        findQuery = em.createQuery("SELECT c FROM City c "
-                                + "WHERE c.id = " + id);
+        Query findQuery = em.createNamedQuery("City.findById");
+        findQuery.setParameter("id", id);
         
         List<City> result=findQuery.getResultList() ;
         if(!result.isEmpty())
@@ -98,5 +97,17 @@ public class HandlerDB {
                 transaction.rollback();
             }
         }
+    }
+    
+    public City findCityByName(String name)
+    {
+        Query findQuery = em.createQuery("SELECT c FROM City c WHERE c.name = :name");
+        findQuery.setParameter("name", name);
+        
+        List<City> result= findQuery.getResultList() ;
+        System.out.println("The list size is " + result.size());
+        City firstResult = result.get(0);
+        firstResult.setMeasurementCollection(null);
+        return firstResult;
     }
 }

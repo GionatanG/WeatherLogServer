@@ -14,12 +14,18 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  *
  * @author gionatanG
  */
 @Embeddable
+@XmlAccessorType(XmlAccessType.NONE)
+@XmlRootElement(name = "info")
 public class MeasurementPK implements Serializable {
     @Basic(optional = false)
     @NotNull
@@ -29,11 +35,13 @@ public class MeasurementPK implements Serializable {
     @NotNull
     @Column(name = "UpdateTime")
     @Temporal(TemporalType.TIMESTAMP)
+    @XmlAttribute
     private Date updateTime;
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 64)
     @Column(name = "Name")
+    @XmlAttribute
     private String name;
 
     public MeasurementPK() {

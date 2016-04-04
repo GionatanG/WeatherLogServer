@@ -16,7 +16,12 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.validation.constraints.Size;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlValue;
 
 /**
  *
@@ -25,6 +30,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @Entity
 @Table(name = "Measurement")
 @XmlRootElement
+@XmlAccessorType(XmlAccessType.FIELD)
 @NamedQueries({
     @NamedQuery(name = "Measurement.findAll", query = "SELECT m FROM Measurement m"),
     @NamedQuery(name = "Measurement.findByCity", query = "SELECT m FROM Measurement m WHERE m.measurementPK.city = :city"),
@@ -34,14 +40,19 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "Measurement.findByUnit", query = "SELECT m FROM Measurement m WHERE m.unit = :unit")})
 public class Measurement implements Serializable {
     private static final long serialVersionUID = 1L;
+    
     @EmbeddedId
-    protected MeasurementPK measurementPK;
+    @XmlElement(name = "main")
+    public MeasurementPK measurementPK;
+    
     @Size(max = 128)
     @Column(name = "Value")
     private String value;
+    
     @Size(max = 16)
     @Column(name = "Unit")
     private String unit;
+    
     @JoinColumn(name = "City", referencedColumnName = "ID", insertable = false, updatable = false)
     @ManyToOne(optional = false)
     private City city1;
