@@ -41,31 +41,34 @@ public class Weather
     @GET
     @Produces(MediaType.TEXT_XML)
     @Path("/actual")
-    public City getActualWeather(
+    public List<CityLog> getActualWeather(
         @QueryParam("name") String names) 
     {
-        /**/
-        System.out.println("dcdhgcc");
+        City city = null;
+        List<Measurement> measurements = null;
+        ArrayList<CityLog> response = new ArrayList<CityLog>();
+        
         String[] cities = names.split(",");
-        for(int i = 0; i < cities.length; i++)
-        {
-            System.out.println(cities[i]);
-        }
       
         HandlerDB managerDB = new HandlerDB();
-        String s = cities[0];
-        City city = managerDB.findCityByName(s);
+        for(int i = 0; i < cities.length; i++)
+        {
+            CityLog log = new CityLog();
+            city = managerDB.findCityByName(cities[i]);
+            if(city == null)
+            {
+                measurements = null;
+            }
+            else
+            {
+                measurements = managerDB.findActualMeasurementByCityID(city.getId());
+            }
+            log.setCity(city);
+            log.setMeasurements(measurements);
+            response.add(log);
+        }
         
-        System.out.println("id :" + city.getId());
-        System.out.println("name :" + city.getName());
-        System.out.println("country :" + city.getCountry());
-        City c=new City();
-        c.setCountry(city.getCountry());
-        c.setId(city.getId());
-        c.setLatitude(city.getLatitude());
-        c.setLongitude(city.getLongitude());
-        c.setName(city.getName());
-        return city;
+        return response;
         /*
         City c = new City();
         c.setCountry("IT");
