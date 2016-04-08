@@ -30,7 +30,7 @@ import javax.xml.bind.annotation.XmlValue;
 @Entity
 @Table(name = "Measurement")
 @XmlRootElement
-@XmlAccessorType(XmlAccessType.FIELD)
+@XmlAccessorType(XmlAccessType.NONE)
 @NamedQueries({
     @NamedQuery(name = "Measurement.findAll", query = "SELECT m FROM Measurement m"),
     @NamedQuery(name = "Measurement.findByCity", query = "SELECT m FROM Measurement m WHERE m.measurementPK.city = :city"),
@@ -47,10 +47,12 @@ public class Measurement implements Serializable {
     
     @Size(max = 128)
     @Column(name = "Value")
+    @XmlElement
     private String value;
     
     @Size(max = 16)
     @Column(name = "Unit")
+    @XmlElement
     private String unit;
     
     @JoinColumn(name = "City", referencedColumnName = "ID", insertable = false, updatable = false)
