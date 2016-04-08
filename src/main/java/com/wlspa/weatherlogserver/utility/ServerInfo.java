@@ -42,6 +42,21 @@ public class ServerInfo {
         getFile(PATH);
     }
     
+    public Document getInfo()
+    {
+        return info;
+    }
+    
+    public Node getNodeCities()
+    {
+        return info.getElementsByTagName("list_city").item(0);
+    }
+    
+    public Node getNodeMeasurements()
+    {
+        return info.getElementsByTagName("list_measurement").item(0);
+    }
+    
     private void getFile(String path)
     {
         File file = new File(path);

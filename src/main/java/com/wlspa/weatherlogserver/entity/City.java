@@ -18,6 +18,11 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlID;
+import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
@@ -28,6 +33,7 @@ import javax.xml.bind.annotation.XmlTransient;
 @Entity
 @Table(name = "City")
 @XmlRootElement
+@XmlAccessorType(XmlAccessType.FIELD)
 @NamedQueries({
     @NamedQuery(name = "City.findAll", query = "SELECT c FROM City c"),
     @NamedQuery(name = "City.findById", query = "SELECT c FROM City c WHERE c.id = :id"),
@@ -37,27 +43,39 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "City.findByLatitude", query = "SELECT c FROM City c WHERE c.latitude = :latitude")})
 
 public class City implements Serializable {
+    
     private static final long serialVersionUID = 1L;
+    
     @Id
     @Basic(optional = false)
     @NotNull
+    @XmlAttribute
     @Column(name = "ID")
     private Integer id;
+    
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 64)
+    @XmlAttribute
     @Column(name = "Name")
     private String name;
+    
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 5)
+    @XmlAttribute
     @Column(name = "Country")
     private String country;
+    
     // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
+    @XmlAttribute
     @Column(name = "Longitude")
     private Double longitude;
+    
+    @XmlAttribute
     @Column(name = "Latitude")
     private Double latitude;
+        
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "city1")
     private Collection<Measurement> measurementCollection;
 

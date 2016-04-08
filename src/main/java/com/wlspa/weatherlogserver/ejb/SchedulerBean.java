@@ -46,7 +46,7 @@ public class SchedulerBean
             Document data = owmBean.getData(cityName);
             OWMResponse response = new OWMResponse(data);
             int cityID = response.getCityID();
-            if(!dbHandler.findCity(cityID))
+            if(!dbHandler.findCityById(cityID))
             {
                 addCityToDB(response);
             }
@@ -73,7 +73,7 @@ public class SchedulerBean
             Document data = owmBean.getData(cityName);
             OWMResponse response = new OWMResponse(data);
             int cityID = response.getCityID();
-            if(!dbHandler.findCity(cityID))
+            if(!dbHandler.findCityById(cityID))
             {
                 addCityToDB(response);
             }
