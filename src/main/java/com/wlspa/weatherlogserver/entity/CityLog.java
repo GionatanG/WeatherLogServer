@@ -5,6 +5,7 @@
  */
 package com.wlspa.weatherlogserver.entity;
 
+import java.util.Date;
 import java.util.List;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -26,14 +27,8 @@ public class CityLog {
     @XmlAttribute(name = "name")
     private String cityName = null;
     
-    @XmlAttribute(name = "country")
-    private String country = null;
-    
-    @XmlAttribute(name= "longitude")
-    private Double longitude;
-    
-    @XmlAttribute(name= "latitude")
-    private Double latitude;
+    @XmlAttribute(name = "date")
+    private Date date = null;
     
     @XmlElement(name = "measurement")
     private List<Measurement> measurements = null;
@@ -46,16 +41,12 @@ public class CityLog {
         return cityName;
     }
 
-    public String getCountry() {
-        return country;
+    public Date getDate() {
+        return date;
     }
 
-    public Double getLongitude() {
-        return longitude;
-    }
-
-    public Double getLatitude() {
-        return latitude;
+    public void setDate(Date date) {
+        this.date = date;
     }
     
     public List<Measurement> getMeasurements()
@@ -67,9 +58,7 @@ public class CityLog {
     {
         cityId = city.getId();
         cityName = city.getName();
-        country = city.getCountry();
-        latitude = city.getLatitude();
-        longitude = city.getLongitude();
+        date = null;
         
     }
     

@@ -5,6 +5,7 @@ import com.wlspa.weatherlogserver.utility.OWMResponse;
 import com.wlspa.weatherlogserver.utility.ServerInfo;
 import java.util.Date;
 import java.util.ArrayList;
+import java.util.Calendar;
 import javax.annotation.PostConstruct;
 import javax.ejb.Schedule;
 import javax.ejb.Singleton;
@@ -30,7 +31,7 @@ public class SchedulerBean
     }
 
     
-    @Schedule(hour="*/1", persistent=false)
+    @Schedule(minute="*/1", persistent=false)
     public void hourlySchedule() 
     {
         ServerInfo info = new ServerInfo();
@@ -98,6 +99,13 @@ public class SchedulerBean
                                   String unit, OWMResponse response) {
         int idCity = response.getCityID();
         Date updateTime = response.getUpdateTime();
+        Calendar cal = Calendar.getInstance();  
+        cal.setTime(updateTime);   
+        cal.set(Calendar.MINUTE, 0);  
+        cal.set(Calendar.SECOND, 0);  
+        cal.set(Calendar.MILLISECOND, 0);  
+        updateTime = cal.getTime();
+        
         String value = response.getMeasurement(name);
         
         dbHandler.addMeasurement(idCity, updateTime, name, value, unit);
