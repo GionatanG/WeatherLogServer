@@ -110,6 +110,19 @@ public class HandlerDB {
         firstResult.setMeasurementCollection(null);
         return firstResult;
     }
+    
+    public List<City> findAllCities()
+    {
+        Query findQuery = em.createQuery("SELECT c FROM City c");
+        
+        List<City> result= findQuery.getResultList() ;
+        for(int i = 0; i < result.size(); i++)
+        {
+            result.get(i).setMeasurementCollection(null);
+        }
+        
+        return result;
+    }
 
     public List<Measurement> findActualMeasurementByCityID(Integer id)
     {

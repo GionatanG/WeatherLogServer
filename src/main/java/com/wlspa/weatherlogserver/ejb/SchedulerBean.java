@@ -31,7 +31,8 @@ public class SchedulerBean
     }
 
     
-    @Schedule(minute="*/1", persistent=false)
+    
+    @Schedule(hour="*", minute="*/1", persistent=false)
     public void hourlySchedule() 
     {
         ServerInfo info = new ServerInfo();

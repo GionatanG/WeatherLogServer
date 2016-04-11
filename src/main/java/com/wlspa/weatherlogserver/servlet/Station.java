@@ -1,7 +1,10 @@
 package com.wlspa.weatherlogserver.servlet;
 
+import com.wlspa.weatherlogserver.entity.City;
+import com.wlspa.weatherlogserver.persistence.HandlerDB;
 import com.wlspa.weatherlogserver.utility.ServerInfo;
 import java.io.StringWriter;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.ws.rs.GET;
@@ -36,13 +39,10 @@ public class Station
     @GET
     @Produces(MediaType.TEXT_XML)
     @Path("/city")
-    public String getAllCities()
+    public List<City> getAllCities()
     {
-        ServerInfo serverinfo = new ServerInfo();
-        Node cities =  serverinfo.getNodeCities();
-        String ret =  convertDomToString(cities);
-        System.out.println(ret);
-        return ret;
+        HandlerDB manager = new HandlerDB();
+        return manager.findAllCities();
     }
     
     
