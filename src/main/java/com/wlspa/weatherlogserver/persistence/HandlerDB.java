@@ -124,9 +124,12 @@ public class HandlerDB {
         System.out.println("The list size is " + result.size());
         for(int i = 0; i < result.size(); i++)
         {
-           result.get(0).setCity1(null);
+           result.get(i).setCity1(null);
+           
         }
         
         return result;
     }
+    
+    
 }
