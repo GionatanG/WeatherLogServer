@@ -33,11 +33,10 @@ public class HandlerDB {
         em = factory.createEntityManager();
     }
 
-    public boolean findCity(int id)
+    public boolean findCityById(int id)
     {
-        Query findQuery;
-        findQuery = em.createQuery("SELECT c FROM City c "
-                                + "WHERE c.id = " + id);
+        Query findQuery = em.createNamedQuery("City.findById");
+        findQuery.setParameter("id", id);
         
         List<City> result=findQuery.getResultList() ;
         if(!result.isEmpty())
@@ -98,5 +97,36 @@ public class HandlerDB {
                 transaction.rollback();
             }
         }
+    }
+    
+    public City findCityByName(String name)
+    {
+        Query findQuery = em.createQuery("SELECT c FROM City c WHERE c.name = :name");
+        findQuery.setParameter("name", name);
+        
+        List<City> result= findQuery.getResultList() ;
+        System.out.println("The list size is " + result.size());
+        City firstResult = result.get(0);
+        firstResult.setMeasurementCollection(null);
+        return firstResult;
+    }
+
+    public List<Measurement> findActualMeasurementByCityID(Integer id)
+    {
+        Query findQuery = em.createQuery("SELECT m FROM Measurement m "
+                       + "WHERE m.measurementPK.city = :id AND "
+                + "m.measurementPK.updateTime = (SELECT MAX(m2.measurementPK.updateTime) "
+                + "FROM Measurement m2 WHERE m2.measurementPK.city = :id AND "
+                + "m.measurementPK.name = m2.measurementPK.name)");
+        findQuery.setParameter("id", id);
+        
+        List<Measurement> result= findQuery.getResultList() ;
+        System.out.println("The list size is " + result.size());
+        for(int i = 0; i < result.size(); i++)
+        {
+           result.get(0).setCity1(null);
+        }
+        
+        return result;
     }
 }
