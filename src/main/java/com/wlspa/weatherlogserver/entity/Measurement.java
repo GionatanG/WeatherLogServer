@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.wlspa.weatherlogserver.entity;
 
 import java.io.Serializable;
@@ -18,14 +13,13 @@ import javax.persistence.Table;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlValue;
 
 /**
  *
  * @author gionatanG
+ * @author chiaraC
  */
 @Entity
 @Table(name = "Measurement")
@@ -38,6 +32,7 @@ import javax.xml.bind.annotation.XmlValue;
     @NamedQuery(name = "Measurement.findByName", query = "SELECT m FROM Measurement m WHERE m.measurementPK.name = :name"),
     @NamedQuery(name = "Measurement.findByValue", query = "SELECT m FROM Measurement m WHERE m.value = :value"),
     @NamedQuery(name = "Measurement.findByUnit", query = "SELECT m FROM Measurement m WHERE m.unit = :unit")})
+
 public class Measurement implements Serializable {
     private static final long serialVersionUID = 1L;
     
@@ -70,6 +65,12 @@ public class Measurement implements Serializable {
         this.measurementPK = new MeasurementPK(city, updateTime, name);
     }
 
+    public Measurement(int city, Date updateTime, String name, String value, String unit) {
+        this.measurementPK = new MeasurementPK(city, updateTime, name);
+        this.value = value;
+        this.unit = unit;
+    }
+    
     public MeasurementPK getMeasurementPK() {
         return measurementPK;
     }

@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.wlspa.weatherlogserver.entity;
 
 import java.io.Serializable;
@@ -27,6 +22,7 @@ import javax.xml.bind.annotation.XmlTransient;
 /**
  *
  * @author gionatanG
+ * @author chiaraC
  */
 @Entity
 @Table(name = "City")
@@ -88,6 +84,14 @@ public class City implements Serializable {
         this.id = id;
         this.name = name;
         this.country = country;
+    }
+
+    public City(Integer id, String name, String country, Double longitude, Double latitude) {
+        this.id = id;
+        this.name = name;
+        this.country = country;
+        this.longitude = longitude;
+        this.latitude = latitude;
     }
 
     public Integer getId() {
