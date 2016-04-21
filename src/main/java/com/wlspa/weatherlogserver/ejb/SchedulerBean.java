@@ -48,7 +48,7 @@ public class SchedulerBean
             Document data = owmBean.getData(cityName);
             OWMResponse response = new OWMResponse(data);
             int cityID = response.getCityID();
-            if(!dbHandler.findCityById(cityID))
+            if(!dbHandler.checkCityExists(cityID))
             {
                 addCityToDB(response);
             }
@@ -75,7 +75,7 @@ public class SchedulerBean
             Document data = owmBean.getData(cityName);
             OWMResponse response = new OWMResponse(data);
             int cityID = response.getCityID();
-            if(!dbHandler.findCityById(cityID))
+            if(!dbHandler.checkCityExists(cityID))
             {
                 addCityToDB(response);
             }
@@ -99,13 +99,12 @@ public class SchedulerBean
     private void addMeasurementToDB(String name, 
                                   String unit, OWMResponse response) {
         int idCity = response.getCityID();
-        Date updateTime = response.getUpdateTime();
         Calendar cal = Calendar.getInstance();  
-        cal.setTime(updateTime);   
+        cal.setTime(new Date());   
         cal.set(Calendar.MINUTE, 0);  
         cal.set(Calendar.SECOND, 0);  
         cal.set(Calendar.MILLISECOND, 0);  
-        updateTime = cal.getTime();
+        Date updateTime = cal.getTime();
         
         String value = response.getMeasurement(name);
         
