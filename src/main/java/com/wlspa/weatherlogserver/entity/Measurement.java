@@ -47,12 +47,12 @@ public class Measurement implements Serializable {
     
     @Size(max = 128)
     @Column(name = "Value")
-    @XmlElement
+    @XmlElement(name = "value")
     private String value;
     
     @Size(max = 16)
     @Column(name = "Unit")
-    @XmlElement
+    @XmlElement(name = "unit")
     private String unit;
     
     @JoinColumn(name = "City", referencedColumnName = "ID", insertable = false, updatable = false)
