@@ -31,17 +31,18 @@ public class MeasurementPK implements Serializable {
     @NotNull
     @Column(name = "City")
     private int city;
+    
     @Basic(optional = false)
     @NotNull
     @Column(name = "UpdateTime")
     @Temporal(TemporalType.TIMESTAMP)
-    @XmlAttribute
     private Date updateTime;
+    
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 64)
     @Column(name = "Name")
-    @XmlAttribute
+    @XmlAttribute(name="name")
     private String name;
 
     public MeasurementPK() {

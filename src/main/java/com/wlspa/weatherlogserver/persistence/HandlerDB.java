@@ -7,6 +7,7 @@ package com.wlspa.weatherlogserver.persistence;
 
 import com.wlspa.weatherlogserver.entity.City;
 import com.wlspa.weatherlogserver.entity.Measurement;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.logging.Logger;
@@ -33,7 +34,7 @@ public class HandlerDB {
         em = factory.createEntityManager();
     }
 
-    public boolean findCityById(int id)
+    public boolean checkCityExists(int id)
     {
         Query findQuery = em.createNamedQuery("City.findById");
         findQuery.setParameter("id", id);
@@ -110,6 +111,19 @@ public class HandlerDB {
         firstResult.setMeasurementCollection(null);
         return firstResult;
     }
+    
+    public List<City> findAllCities()
+    {
+        Query findQuery = em.createQuery("SELECT c FROM City c");
+        
+        List<City> result= findQuery.getResultList() ;
+        for(int i = 0; i < result.size(); i++)
+        {
+            result.get(i).setMeasurementCollection(null);
+        }
+        
+        return result;
+    }
 
     public List<Measurement> findActualMeasurementByCityID(Integer id)
     {
@@ -130,6 +144,33 @@ public class HandlerDB {
         
         return result;
     }
-    
+
+    public List<Measurement> findPastMeasurementsByCityID(int id, int interval, int step) 
+    {
+        Query findQuery = em.createQuery(
+                "SELECT m.measurementPK.name, AVG(m.value), m.unit "
+              + "FROM Measurement m "
+              + "WHERE m.measurementPK.city = :id AND "
+              + "((unix_timestamp() - unix_timestamp(m.measurementPK.updateTime)) "
+              + "BETWEEN 3600*(:step)*(:interval) AND 3600*(:step)*(:interval + 1)) "
+              + "GROUP BY m.measurementPK.name, m.unit");
+        findQuery.setParameter("id", id);
+        findQuery.setParameter("step", step);
+        findQuery.setParameter("interval", interval);
+        
+        List resultList = findQuery.getResultList();
+        List<Measurement> measurements = new ArrayList<Measurement>();
+        for(int i = 0; i < resultList.size(); i++)
+        {
+            Object[] result = (Object[]) resultList.get(i);
+            Measurement m = new Measurement(0, null, (String) result[0]);
+            Double value = (Double) result[1];
+            String s = String.format("%.2f", value);
+            m.setValue(s);
+            m.setUnit((String) result[2]);
+            measurements.add(m);
+        }
+        return measurements;
+    }
     
 }

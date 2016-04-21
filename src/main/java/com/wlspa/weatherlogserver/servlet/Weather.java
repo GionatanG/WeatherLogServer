@@ -3,9 +3,11 @@ package com.wlspa.weatherlogserver.servlet;
 import com.wlspa.weatherlogserver.entity.City;
 import com.wlspa.weatherlogserver.entity.CityLog;
 import com.wlspa.weatherlogserver.entity.Measurement;
+import com.wlspa.weatherlogserver.entity.MeasurementGroup;
 import com.wlspa.weatherlogserver.persistence.HandlerDB;
 import java.io.StringWriter;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
@@ -45,7 +47,7 @@ public class Weather
         @QueryParam("name") String names) 
     {
         City city = null;
-        List<Measurement> measurements = null;
+        List<MeasurementGroup> measurements = null;
         ArrayList<CityLog> response = new ArrayList<CityLog>();
         
         String[] cities = names.split(",");
@@ -61,7 +63,7 @@ public class Weather
             }
             else
             {
-                measurements = managerDB.findActualMeasurementByCityID(city.getId());
+                //measurements = findMeasurements(city.getId(), 1, 1);
             }
             log.setCity(city);
             log.setMeasurements(measurements);
@@ -72,35 +74,49 @@ public class Weather
     } 
         @GET
     @Produces(MediaType.TEXT_XML)
-    @Path("/analysis")
+    @Path("/analysis/")
     public List<CityLog> getAnalysisWeather(
-        @QueryParam("name") String names) 
+        @QueryParam("name") String names,
+        @QueryParam("type") String type)
     {
-        City city = null;
-        List<Measurement> measurements = null;
-        ArrayList<CityLog> response = new ArrayList<CityLog>();
         
-        String[] cities = names.split(",");
-      
-        HandlerDB managerDB = new HandlerDB();
-        for(int i = 0; i < cities.length; i++)
+        if(names == null || names.length() == 0 || type == null)
         {
-            CityLog log = new CityLog();
-            city = managerDB.findCityByName(cities[i]);
-            if(city == null)
-            {
-                measurements = null;
-            }
-            else
-            {
-                measurements = managerDB.findActualMeasurementByCityID(city.getId());
-            }
-            log.setCity(city);
-            log.setMeasurements(measurements);
-            response.add(log);
+            return null;
         }
         
-        return response;
+        int count, step;
+        
+        if(type.equals("h"))
+        {
+            count = 1;
+            step = 1;
+        } else 
+            if(type.equals("d"))
+            {
+                count = 24;
+                step = 1;               
+            }
+            else 
+                if(type.equals("w"))
+                {
+                    step = 6;
+                    count = 28;    
+                }
+                else 
+                    if(type.equals("m"))
+                    {
+                        step = 24;
+                        count = 30;
+                    }
+                    else
+                    {
+                        System.out.println("Type not supported");
+                        return null;   
+                    }
+        String[] cities = names.split(",");
+        
+        return getCityLogs(cities, count, step);   
     } 
     
     private String convertDomToString(Node root)
@@ -135,4 +151,57 @@ public class Weather
             em.close();
         }
     }
+
+    private List<MeasurementGroup> findMeasurements(HandlerDB hdb, int id, int howmany, int step) 
+    {
+        List<MeasurementGroup> result = new ArrayList<MeasurementGroup>();
+        Calendar updateTime = Calendar.getInstance();
+        updateTime.setTime(new Date());
+        updateTime.set(Calendar.MINUTE, 0);  
+        updateTime.set(Calendar.SECOND, 0);  
+        updateTime.set(Calendar.MILLISECOND, 0);
+        
+        for(int i = 0; i < howmany; i++)
+        {
+            MeasurementGroup group = new MeasurementGroup();
+            List<Measurement> measurements = hdb.findPastMeasurementsByCityID(id, i, step);
+            group.setMeasurements(measurements);
+            group.setUpdateTime(updateTime.getTime());
+            updateTime.add(Calendar.HOUR, -step);
+            result.add(group);
+        }
+        return result;
+    }
+
+    private ArrayList<CityLog> getCityLogs(String[] cities, int count, int step) 
+    {
+   
+        ArrayList<CityLog> response = new ArrayList<CityLog>();
+        HandlerDB managerDB = new HandlerDB();
+        for(int i = 0; i < cities.length; i++)
+        {
+            response.add(getCityLog(managerDB, cities[i], count, step));
+            
+        }
+        
+        return response;
+    }
+
+    private CityLog getCityLog(HandlerDB hdb, String cityName, int count, int step) 
+    {
+        City city = null;
+        List<MeasurementGroup> measurements = null;
+        CityLog log = new CityLog();
+        city = hdb.findCityByName(cityName);
+        if(city == null)
+        {
+            return null;
+        }
+        measurements = findMeasurements(hdb, city.getId(), count, step);
+        log.setCity(city);
+        log.setMeasurements(measurements);
+        return log;
+    }
+
+    
 } 
