@@ -23,14 +23,15 @@ import javax.persistence.Query;
  * @author ChiaraC
  */
 
-public class HandlerDB {
+public class ManagerDB {
     private static final Logger LOGGER = Logger.getLogger("JPA");
 
     private EntityManager em;
     
-    public HandlerDB()
+    public ManagerDB()
     {
-        EntityManagerFactory factory = Persistence.createEntityManagerFactory("weatherLogUnit");
+        EntityManagerFactory factory;
+        factory = Persistence.createEntityManagerFactory("weatherLogUnit");
         em = factory.createEntityManager();
     }
 
@@ -39,12 +40,8 @@ public class HandlerDB {
         Query findQuery = em.createNamedQuery("City.findById");
         findQuery.setParameter("id", id);
         
-        List<City> result=findQuery.getResultList() ;
-        if(!result.isEmpty())
-        {   
-           return true;
-        }
-        return false;
+        List res = findQuery.getResultList();
+        return (!res.isEmpty());
     }
     
     public void addCity(int id, String name, String country, 
@@ -55,12 +52,7 @@ public class HandlerDB {
         {
             transaction.begin();
 
-            City city = new City();
-            city.setId(id);
-            city.setName(name); 
-            city.setCountry(country);
-            city.setLongitude(longitude);
-            city.setLatitude(latitude);
+            City city = new City(id, name, country, longitude, latitude);
 
             em.merge(city);
             transaction.commit();
@@ -84,9 +76,8 @@ public class HandlerDB {
         {
             transaction.begin();
             
-            Measurement mes = new Measurement(idCity, updateTime, name);
-            mes.setValue(value);
-            mes.setUnit(unit);
+            Measurement mes;
+            mes = new Measurement(idCity, updateTime, name, value, unit);
             
             em.merge(mes);
             transaction.commit();
@@ -106,7 +97,6 @@ public class HandlerDB {
         findQuery.setParameter("name", name);
         
         List<City> result= findQuery.getResultList() ;
-        System.out.println("The list size is " + result.size());
         City firstResult = result.get(0);
         firstResult.setMeasurementCollection(null);
         return firstResult;
@@ -117,29 +107,10 @@ public class HandlerDB {
         Query findQuery = em.createQuery("SELECT c FROM City c");
         
         List<City> result= findQuery.getResultList() ;
+        
         for(int i = 0; i < result.size(); i++)
         {
             result.get(i).setMeasurementCollection(null);
-        }
-        
-        return result;
-    }
-
-    public List<Measurement> findActualMeasurementByCityID(Integer id)
-    {
-        Query findQuery = em.createQuery("SELECT m FROM Measurement m "
-                       + "WHERE m.measurementPK.city = :id AND "
-                + "m.measurementPK.updateTime = (SELECT MAX(m2.measurementPK.updateTime) "
-                + "FROM Measurement m2 WHERE m2.measurementPK.city = :id AND "
-                + "m.measurementPK.name = m2.measurementPK.name)");
-        findQuery.setParameter("id", id);
-        
-        List<Measurement> result= findQuery.getResultList() ;
-        System.out.println("The list size is " + result.size());
-        for(int i = 0; i < result.size(); i++)
-        {
-           result.get(i).setCity1(null);
-           
         }
         
         return result;
@@ -154,6 +125,7 @@ public class HandlerDB {
               + "((unix_timestamp() - unix_timestamp(m.measurementPK.updateTime)) "
               + "BETWEEN 3600*(:step)*(:interval) AND 3600*(:step)*(:interval + 1)) "
               + "GROUP BY m.measurementPK.name, m.unit");
+        
         findQuery.setParameter("id", id);
         findQuery.setParameter("step", step);
         findQuery.setParameter("interval", interval);
