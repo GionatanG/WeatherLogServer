@@ -33,15 +33,16 @@ public class OWMBean {
     
     public OWMBean()
     {
-        appIDQueue = initializeAppIDQueue();
+        appIDQueue=initializeAppIDQueue();
     }
 
     Document getData(String cityName) 
     {
         try
         {
-            String myAppID = appIDQueue.take();
+            String myAppID=appIDQueue.take();
             appIDQueue.put(myAppID);
+            System.out.println("Questa è l'appID corrente: "+ myAppID);
             String subURL = "weather?q=" + cityName 
                           + "&units=metric&mode=xml"
                           + "&appid=" + myAppID;
@@ -87,7 +88,7 @@ public class OWMBean {
             //Open AppIDs.config
             BufferedReader reader = new BufferedReader(new FileReader(appIDsFile));
             String singleAppID;
-            while ( (singleAppID = reader.readLine()) != null)
+            while ( (singleAppID= reader.readLine()) != null)
             {
                 //I add a singleAppID to the queue result
                 result.put(singleAppID);

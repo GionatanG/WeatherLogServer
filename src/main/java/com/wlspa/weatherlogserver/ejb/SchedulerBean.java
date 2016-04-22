@@ -1,6 +1,6 @@
 package com.wlspa.weatherlogserver.ejb;
 
-import com.wlspa.weatherlogserver.persistence.ManagerDB;
+import com.wlspa.weatherlogserver.persistence.HandlerDB;
 import com.wlspa.weatherlogserver.utility.OWMResponse;
 import com.wlspa.weatherlogserver.utility.ServerInfo;
 import java.util.Date;
@@ -22,12 +22,12 @@ import org.w3c.dom.Document;
 public class SchedulerBean 
 {
     
-    private ManagerDB dbHandler = null;
+    private HandlerDB dbHandler = null;
     
     @PostConstruct
     public void init()
     {
-        dbHandler=new ManagerDB();
+        dbHandler=new HandlerDB();
     }
 
     
@@ -61,7 +61,7 @@ public class SchedulerBean
         }
     }
     
-    /*
+    
     @Schedule(hour = "2", minute = "59", second= "59", persistent = false)
     public void dailySchedule() 
     {
@@ -83,7 +83,7 @@ public class SchedulerBean
             addSunToDB("set",response);
         }
     }
-    */
+    
 
     private void addCityToDB(OWMResponse response) {
         int id = response.getCityID();
