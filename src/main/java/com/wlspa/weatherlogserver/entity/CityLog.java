@@ -1,3 +1,8 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
 package com.wlspa.weatherlogserver.entity;
 
 import java.util.List;
@@ -10,10 +15,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 /**
  *
  * @author gionatanG
- * @author chiaraC
- * 
  */
-
 @XmlRootElement(name = "cityLog")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class CityLog {
@@ -26,14 +28,6 @@ public class CityLog {
     
     @XmlElement(name = "measurement_group")
     private List<MeasurementGroup> measurements = null;
-
-    public CityLog(City city, List<MeasurementGroup> measurements) 
-    {
-        this.cityId = city.getId();
-        this.cityName = city.getName();
-        this.measurements = measurements;
-        
-    }
     
     public Integer getCityId() {
         return cityId;

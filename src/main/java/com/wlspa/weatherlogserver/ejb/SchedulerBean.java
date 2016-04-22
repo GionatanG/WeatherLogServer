@@ -61,7 +61,7 @@ public class SchedulerBean
         }
     }
     
-    /*
+    
     @Schedule(hour = "2", minute = "59", second= "59", persistent = false)
     public void dailySchedule() 
     {
@@ -83,7 +83,7 @@ public class SchedulerBean
             addSunToDB("set",response);
         }
     }
-    */
+    
 
     private void addCityToDB(OWMResponse response) {
         int id = response.getCityID();

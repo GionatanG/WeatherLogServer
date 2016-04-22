@@ -24,7 +24,6 @@ import javax.persistence.Query;
  */
 
 public class ManagerDB {
-    private static final Logger LOGGER = Logger.getLogger("JPA");
 
     private EntityManager em;
     
@@ -40,8 +39,8 @@ public class ManagerDB {
         Query findQuery = em.createNamedQuery("City.findById");
         findQuery.setParameter("id", id);
         
-        List res = findQuery.getResultList();
-        return (!res.isEmpty());
+        List<City> result=findQuery.getResultList() ;
+        return !result.isEmpty();
     }
     
     public void addCity(int id, String name, String country, 
@@ -76,8 +75,9 @@ public class ManagerDB {
         {
             transaction.begin();
             
-            Measurement mes;
-            mes = new Measurement(idCity, updateTime, name, value, unit);
+            Measurement mes = new Measurement(idCity, updateTime, name);
+            mes.setValue(value);
+            mes.setUnit(unit);
             
             em.merge(mes);
             transaction.commit();
@@ -107,7 +107,6 @@ public class ManagerDB {
         Query findQuery = em.createQuery("SELECT c FROM City c");
         
         List<City> result= findQuery.getResultList() ;
-        
         for(int i = 0; i < result.size(); i++)
         {
             result.get(i).setMeasurementCollection(null);
@@ -125,7 +124,6 @@ public class ManagerDB {
               + "((unix_timestamp() - unix_timestamp(m.measurementPK.updateTime)) "
               + "BETWEEN 3600*(:step)*(:interval) AND 3600*(:step)*(:interval + 1)) "
               + "GROUP BY m.measurementPK.name, m.unit");
-        
         findQuery.setParameter("id", id);
         findQuery.setParameter("step", step);
         findQuery.setParameter("interval", interval);

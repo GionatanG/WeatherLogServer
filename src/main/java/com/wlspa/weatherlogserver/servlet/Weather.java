@@ -5,26 +5,15 @@ import com.wlspa.weatherlogserver.entity.CityLog;
 import com.wlspa.weatherlogserver.entity.Measurement;
 import com.wlspa.weatherlogserver.entity.MeasurementGroup;
 import com.wlspa.weatherlogserver.persistence.ManagerDB;
-import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
-import javax.xml.transform.OutputKeys;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerConfigurationException;
-import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
-import org.w3c.dom.Node;
 
 
 /******************************************************************************
@@ -83,12 +72,10 @@ public class Weather
         return getCityLogs(cities, count, step);   
     } 
     
-
     private List<MeasurementGroup> getMeasurementGroupsByCityID(
             ManagerDB hdb, int id, int howmany, int step) 
     {
         List<MeasurementGroup> result = new ArrayList<MeasurementGroup>();
-        
         Calendar updateTime = Calendar.getInstance();
         updateTime.setTime(new Date());
         updateTime.set(Calendar.MINUTE, 0);  
@@ -97,13 +84,11 @@ public class Weather
         
         for(int i = 0; i < howmany; i++)
         {
-            
+            MeasurementGroup group = new MeasurementGroup();
             List<Measurement> measurements = hdb.findPastMeasurementsByCityID(id, i, step);
-            MeasurementGroup group;
-            group = new MeasurementGroup(updateTime.getTime(), measurements);
-            
+            group.setMeasurements(measurements);
+            group.setUpdateTime(updateTime.getTime());
             updateTime.add(Calendar.HOUR, -step);
-            
             result.add(group);
         }
         return result;
@@ -131,13 +116,15 @@ public class Weather
         {
             return null;
         }
-        
         List<MeasurementGroup> measurements;
         measurements = getMeasurementGroupsByCityID(hdb, city.getId(), count, step);
         
-        CityLog log = new CityLog(city, measurements);
+        CityLog log = new CityLog();
+        log.setCity(city);
+        log.setMeasurements(measurements);
         
         return log;
     }
-   
+
+    
 } 

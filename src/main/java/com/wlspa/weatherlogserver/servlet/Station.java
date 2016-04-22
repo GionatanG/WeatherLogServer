@@ -31,7 +31,11 @@ import org.w3c.dom.Node;
 @Path("/list")
 public class Station 
 {
-
+/******************************************************************************
+ * 
+ * return the whole list of cities
+ * 
+ *****************************************************************************/
     @GET
     @Produces(MediaType.TEXT_XML)
     @Path("/city")
@@ -42,6 +46,11 @@ public class Station
     }
     
     
+ /******************************************************************************
+ * 
+ * return the whole list of measurements
+ * 
+ *****************************************************************************/
     @GET
     @Produces(MediaType.TEXT_XML)
     @Path("/measurement")
@@ -55,22 +64,21 @@ public class Station
     
     private String convertDOMToString(Node root)
     {
+        String output = null;
         try {
             TransformerFactory tf = TransformerFactory.newInstance();
             Transformer transformer = tf.newTransformer();
             transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
-            
             StringWriter writer = new StringWriter();
             transformer.transform(new DOMSource(root), new StreamResult(writer));
-            String output = writer.getBuffer().toString().replaceAll("\n|\r", "");
             
-            return output;
+            output = writer.getBuffer().toString().replaceAll("\n|\r", "");
             
         } catch (TransformerConfigurationException ex) {
             Logger.getLogger(Station.class.getName()).log(Level.SEVERE, null, ex);
         } catch (TransformerException ex) {
             Logger.getLogger(Station.class.getName()).log(Level.SEVERE, null, ex);
         }
-        return null;
+        return output;
     }
 } 

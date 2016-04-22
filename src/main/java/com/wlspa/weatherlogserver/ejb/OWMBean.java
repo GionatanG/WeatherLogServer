@@ -42,6 +42,7 @@ public class OWMBean {
         {
             String myAppID = appIDQueue.take();
             appIDQueue.put(myAppID);
+            System.out.println("Questa è l'appID corrente: "+ myAppID);
             String subURL = "weather?q=" + cityName 
                           + "&units=metric&mode=xml"
                           + "&appid=" + myAppID;
@@ -51,8 +52,8 @@ public class OWMBean {
             
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
             DocumentBuilder builder = factory.newDocumentBuilder();
-            Document d=builder.parse( connection.getInputStream());
-            return d;
+            Document doc = builder.parse( connection.getInputStream());
+            return doc;
         } 
         
         catch (ParserConfigurationException ex) 
@@ -80,14 +81,14 @@ public class OWMBean {
 
     private LinkedBlockingQueue<String> initializeAppIDQueue() 
     {
-        LinkedBlockingQueue<String> result=new LinkedBlockingQueue<String>();
+        LinkedBlockingQueue<String> result = new LinkedBlockingQueue<String>();
         //the appIDs are stored in a configuration file
          try
         {
             //Open AppIDs.config
             BufferedReader reader = new BufferedReader(new FileReader(appIDsFile));
             String singleAppID;
-            while ( (singleAppID = reader.readLine()) != null)
+            while ( (singleAppID= reader.readLine()) != null)
             {
                 //I add a singleAppID to the queue result
                 result.put(singleAppID);

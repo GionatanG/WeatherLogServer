@@ -24,16 +24,14 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
+import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
-
 /**
  *
  * @author gionatanG
- * @author chiaraC
  */
-
 public class ServerInfo {  
     private final String PATH = "data.xml";
     
@@ -74,7 +72,6 @@ public class ServerInfo {
             
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
             DocumentBuilder builder = factory.newDocumentBuilder();
-            System.out.println(file.toString());
             info = builder.parse(file);
         } 
         
