@@ -23,14 +23,14 @@ import javax.persistence.Query;
  * @author ChiaraC
  */
 
-public class HandlerDB {
-    private static final Logger LOGGER = Logger.getLogger("JPA");
+public class ManagerDB {
 
     private EntityManager em;
     
-    public HandlerDB()
+    public ManagerDB()
     {
-        EntityManagerFactory factory = Persistence.createEntityManagerFactory("weatherLogUnit");
+        EntityManagerFactory factory;
+        factory = Persistence.createEntityManagerFactory("weatherLogUnit");
         em = factory.createEntityManager();
     }
 
@@ -40,11 +40,7 @@ public class HandlerDB {
         findQuery.setParameter("id", id);
         
         List<City> result=findQuery.getResultList() ;
-        if(!result.isEmpty())
-        {   
-           return true;
-        }
-        return false;
+        return !result.isEmpty();
     }
     
     public void addCity(int id, String name, String country, 
@@ -55,12 +51,7 @@ public class HandlerDB {
         {
             transaction.begin();
 
-            City city = new City();
-            city.setId(id);
-            city.setName(name); 
-            city.setCountry(country);
-            city.setLongitude(longitude);
-            city.setLatitude(latitude);
+            City city = new City(id, name, country, longitude, latitude);
 
             em.merge(city);
             transaction.commit();
@@ -106,7 +97,6 @@ public class HandlerDB {
         findQuery.setParameter("name", name);
         
         List<City> result= findQuery.getResultList() ;
-        System.out.println("The list size is " + result.size());
         City firstResult = result.get(0);
         firstResult.setMeasurementCollection(null);
         return firstResult;
@@ -120,26 +110,6 @@ public class HandlerDB {
         for(int i = 0; i < result.size(); i++)
         {
             result.get(i).setMeasurementCollection(null);
-        }
-        
-        return result;
-    }
-
-    public List<Measurement> findActualMeasurementByCityID(Integer id)
-    {
-        Query findQuery = em.createQuery("SELECT m FROM Measurement m "
-                       + "WHERE m.measurementPK.city = :id AND "
-                + "m.measurementPK.updateTime = (SELECT MAX(m2.measurementPK.updateTime) "
-                + "FROM Measurement m2 WHERE m2.measurementPK.city = :id AND "
-                + "m.measurementPK.name = m2.measurementPK.name)");
-        findQuery.setParameter("id", id);
-        
-        List<Measurement> result= findQuery.getResultList() ;
-        System.out.println("The list size is " + result.size());
-        for(int i = 0; i < result.size(); i++)
-        {
-           result.get(i).setCity1(null);
-           
         }
         
         return result;

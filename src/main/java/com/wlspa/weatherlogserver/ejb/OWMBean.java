@@ -33,14 +33,14 @@ public class OWMBean {
     
     public OWMBean()
     {
-        appIDQueue=initializeAppIDQueue();
+        appIDQueue = initializeAppIDQueue();
     }
 
     Document getData(String cityName) 
     {
         try
         {
-            String myAppID=appIDQueue.take();
+            String myAppID = appIDQueue.take();
             appIDQueue.put(myAppID);
             System.out.println("Questa è l'appID corrente: "+ myAppID);
             String subURL = "weather?q=" + cityName 
@@ -52,8 +52,8 @@ public class OWMBean {
             
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
             DocumentBuilder builder = factory.newDocumentBuilder();
-            Document d=builder.parse( connection.getInputStream());
-            return d;
+            Document doc = builder.parse( connection.getInputStream());
+            return doc;
         } 
         
         catch (ParserConfigurationException ex) 
@@ -81,7 +81,7 @@ public class OWMBean {
 
     private LinkedBlockingQueue<String> initializeAppIDQueue() 
     {
-        LinkedBlockingQueue<String> result=new LinkedBlockingQueue<String>();
+        LinkedBlockingQueue<String> result = new LinkedBlockingQueue<String>();
         //the appIDs are stored in a configuration file
          try
         {

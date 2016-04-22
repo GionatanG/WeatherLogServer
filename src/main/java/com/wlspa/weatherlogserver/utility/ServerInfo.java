@@ -72,9 +72,7 @@ public class ServerInfo {
             
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
             DocumentBuilder builder = factory.newDocumentBuilder();
-            System.out.println(file.toString());
             info = builder.parse(file);
-            System.out.println("il file xml è " + info);
         } 
         
         catch (IOException ex) 

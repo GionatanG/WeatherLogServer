@@ -1,7 +1,7 @@
 package com.wlspa.weatherlogserver.servlet;
 
 import com.wlspa.weatherlogserver.entity.City;
-import com.wlspa.weatherlogserver.persistence.HandlerDB;
+import com.wlspa.weatherlogserver.persistence.ManagerDB;
 import com.wlspa.weatherlogserver.utility.ServerInfo;
 import java.io.StringWriter;
 import java.util.List;
@@ -41,7 +41,7 @@ public class Station
     @Path("/city")
     public List<City> getAllCities()
     {
-        HandlerDB manager = new HandlerDB();
+        ManagerDB manager = new ManagerDB();
         return manager.findAllCities();
     }
     
@@ -58,26 +58,27 @@ public class Station
     {
         ServerInfo serverinfo = new ServerInfo();
         Node measurements =  serverinfo.getNodeMeasurements();
-        return convertDomToString(measurements);
+        return convertDOMToString(measurements);
     }
  
     
-    private String convertDomToString(Node root)
+    private String convertDOMToString(Node root)
     {
+        String output = null;
         try {
             TransformerFactory tf = TransformerFactory.newInstance();
             Transformer transformer = tf.newTransformer();
             transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
             StringWriter writer = new StringWriter();
             transformer.transform(new DOMSource(root), new StreamResult(writer));
-            String output = writer.getBuffer().toString().replaceAll("\n|\r", "");
-            System.out.println(output);
-            return output;
+            
+            output = writer.getBuffer().toString().replaceAll("\n|\r", "");
+            
         } catch (TransformerConfigurationException ex) {
             Logger.getLogger(Station.class.getName()).log(Level.SEVERE, null, ex);
         } catch (TransformerException ex) {
             Logger.getLogger(Station.class.getName()).log(Level.SEVERE, null, ex);
         }
-        return null;
+        return output;
     }
 } 

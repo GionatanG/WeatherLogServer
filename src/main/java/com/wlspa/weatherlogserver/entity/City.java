@@ -90,6 +90,14 @@ public class City implements Serializable {
         this.country = country;
     }
 
+    public City(Integer id, String name, String country, Double longitude, Double latitude) {
+        this.id = id;
+        this.name = name;
+        this.country = country;
+        this.longitude = longitude;
+        this.latitude = latitude;
+    }
+
     public Integer getId() {
         return id;
     }
